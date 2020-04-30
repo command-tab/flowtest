@@ -1,28 +1,41 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div ref="dropzone" id="dropzone">Click or drop to select a file</div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Flow from '@flowjs/flow.js'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      flow: {
+        files: []
+      }
+    }
+  },
+  mounted () {
+    this.flow = new Flow({
+      target: '/someapi/upload'
+    })
+
+    this.flow.assignDrop(this.$refs.dropzone)
+    this.flow.assignBrowse(this.$refs.dropzone)
+
+    this.flow.on('fileAdded', (flowFile, event) => {
+      console.log('fileAdded', flowFile, event)
+    })
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style scoped>
+#dropzone {
+  border: 2px dashed gray;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin: 20px;
+  padding: 50px;
 }
 </style>
